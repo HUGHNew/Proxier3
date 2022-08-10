@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Proxier3</string>
+    <string name="dialog_title_special_permissions">Special permissions required</string>
+    <string name="dialog_message_special_permissions">This app needs special permissions by adb\n`adb install -r -g .apk`</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
