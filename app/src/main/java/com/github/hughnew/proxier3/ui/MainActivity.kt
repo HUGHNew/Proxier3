@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
+import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -49,42 +50,49 @@ class MainActivity : AppCompatActivity() {
         if (ProxyOnDrawable == null) {
             ProxyOnDrawable = ResourcesCompat.getDrawable(
                 resources,
-                R.drawable.ic_proxy_on_96, null
+                R.drawable.ic_proxy_pause_96, null
             )
         }
         if (ProxyOffDrawable == null) {
             ProxyOffDrawable = ResourcesCompat.getDrawable(
                 resources,
-                R.drawable.ic_proxy_off_96, null
+                R.drawable.ic_proxy_resume_96, null
             )
         }
     }
 
     private fun setUpViews() {
-        binding.launcher.setOnClickListener {
+        binding.ivLauncher.setOnClickListener {
             if (proxyStatus) {
                 disableProxy()
-                binding.launcher.setImageDrawable(ProxyOnDrawable)
                 it.makeSnack("Proxy: turned off")
+                binding.tvProxy.visibility = View.INVISIBLE
             } else {
                 // TODO: Dialog to get
                 val ip = "127.0.0.1"
                 val port = 12345
-                val result = enableProxy(ip, port)
-                binding.launcher.setImageDrawable(ProxyOffDrawable)
+                val result = enableProxy(ip, port) // TODO: check success
                 it.makeSnack("Proxy: turned on")
-                Log.w(TAG, "Set Proxy-$ip:$port-result:$result")
+                binding.tvProxy.run {
+                    visibility = View.VISIBLE
+                    text = getString(R.string.setting_current_proxy,ip,port) // TODO: apply span
+                }
             }
             proxyStatus = !proxyStatus
+            switchLauncher(proxyStatus)
         }
         detectProxy().apply {
             proxyStatus = this
-            binding.launcher.setImageDrawable(
-                if (this) ProxyOffDrawable else ProxyOnDrawable
-            )
+            switchLauncher(proxyStatus)
         }
     }
 
+    private fun switchLauncher(turnOn:Boolean) {
+        binding.ivLauncher.setImageDrawable(
+            if (turnOn) ProxyOnDrawable else ProxyOffDrawable
+        )
+    }
+    // TODO: move to helper
     private fun detectProxy(): Boolean {
         val proxy = Settings.Global.getString(contentResolver, Settings.Global.HTTP_PROXY)
         Log.w(TAG, "proxy:${proxy ?: "empty"}")
