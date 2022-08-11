@@ -8,6 +8,8 @@ reference here : https://github.com/theappbusiness/android-proxy-toggle
 
 > solution: use `adb` to grant higher level permission to let app modify proxy setting
 
+`adb install -r -g Proxier3.debug.apk`
+
 ## command way
 
 > programmatic solution [here][1]
